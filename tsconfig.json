@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "baseUrl": ".",
+    "outDir": "build",
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "paths": {}
+  },
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules"],
+  "compileOnSave": false
+}
