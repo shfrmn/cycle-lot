@@ -22,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/shfrmn/cycle-lot/issues"
   },
-  "homepage": "https://github.com/shfrmn/cycle-lot#readme"
+  "homepage": "https://github.com/shfrmn/cycle-lot#readme",
+  "devDependencies": {
+    "typescript": "^3.0.1"
+  },
+  "dependencies": {
+    "xstream": "^11.7.0"
+  }
 }
