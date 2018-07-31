@@ -2,21 +2,17 @@
   "name": "cycle-lot",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shfrmn/cycle-lot.git"
   },
-  "keywords": [
-    "cycle",
-    "cyclejs",
-    "collection",
-    "list",
-    "component"
-  ],
+  "keywords": ["cycle", "cyclejs", "collection", "list", "component"],
   "author": "Joseph Shaferman <joseph.shaferman@gmail.com>",
   "license": "MIT",
   "bugs": {

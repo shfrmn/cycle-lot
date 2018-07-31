@@ -2,7 +2,7 @@ const path = require("path")
 const webpack = require("webpack")
 
 module.exports = {
-  entry: "./src/Main.ts",
+  entry: "./src/index.ts",
   target: "web",
   mode: "development",
   module: {
@@ -18,7 +18,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"]
   },
   output: {
-    filename: "cycle-lot.js",
+    filename: "index.js",
     path: path.resolve(__dirname, "dist")
   }
 }
