@@ -19,6 +19,16 @@ module.exports = {
   },
   output: {
     filename: "index.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    library: "lot",
+    libraryTarget: "commonjs2"
+  },
+  externals: {
+    xstream: {
+      commonjs: "xstream",
+      commonjs2: "xstream",
+      amd: "xstream",
+      root: "_"
+    }
   }
 }
