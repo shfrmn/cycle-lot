@@ -1,0 +1,26 @@
+{
+  "name": "cycle-lot",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shfrmn/cycle-lot.git"
+  },
+  "keywords": [
+    "cycle",
+    "cyclejs",
+    "collection",
+    "list",
+    "component"
+  ],
+  "author": "Joseph Shaferman <joseph.shaferman@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shfrmn/cycle-lot/issues"
+  },
+  "homepage": "https://github.com/shfrmn/cycle-lot#readme"
+}
