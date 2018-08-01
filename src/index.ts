@@ -17,11 +17,6 @@ export function pickCombine<T, P extends keyof T>(
   return xs.combine(...sink_list.map((sinks) => sinks[prop]))
 }
 
-interface CollectionOptions<So, T> {
-  component: Component<So, Si<T> & {destroy$?: xs<undefined>}>
-  create$: xs<So | So[]>
-}
-
 type MergeAll<T> = {[P in keyof T]: xs<T[P]>}
 type CombineAll<T> = {[P in keyof T]: xs<T[P][]>}
 
@@ -30,13 +25,16 @@ interface Lot<T> {
   combine: CombineAll<T>
 }
 
-export function Collection<So, T>(options: CollectionOptions<So, T>): Lot<T> {
-  const component$_list$ = options.create$.fold(
+export function Collection<So, T>(
+  Component: Component<So, Si<T> & {destroy$?: xs<undefined>}>,
+  add$: xs<So | So[]>
+): Lot<T> {
+  const component$_list$ = add$.fold(
     (prev_sinks$_list, sources) => {
       const sources_list = Array.isArray(sources) ? sources : [sources]
 
       const sinks_list = sources_list.map((sources) => {
-        return options.component(sources)
+        return Component(sources)
       })
 
       const sinks$_list = sinks_list.map((sinks) => {
