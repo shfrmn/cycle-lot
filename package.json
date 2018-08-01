@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/shfrmn/cycle-lot#readme",
   "devDependencies": {
+    "prettier": "^1.14.0",
     "rollup": "^0.63.4",
     "typescript": "^3.0.1"
   },
