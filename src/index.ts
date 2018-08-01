@@ -55,6 +55,8 @@ interface Lot<T> {
   combine: CombineAll<T>
 }
 
+export const Lot = Collection
+
 export function Collection<So, T>(
   Component: Component<So, Si<T>>,
   add$: xs<So | So[]>,
