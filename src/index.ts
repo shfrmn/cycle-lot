@@ -1,4 +1,5 @@
 import xs from "xstream"
+import isolate from "@cycle/isolate"
 
 type Component<So, Si> = (sources: So, ...rest: any[]) => Si
 type Si<T> = {[P in keyof T]: xs<T[P]>}
@@ -64,7 +65,7 @@ export function Collection<So, T>(
       const sources_list = Array.isArray(sources) ? sources : [sources]
 
       const sinks_list = sources_list.map((sources) => {
-        return Component(sources)
+        return (isolate(Component) as Component<So, Si<T>>)(sources)
       })
 
       const sinks$_list = sinks_list.map((sinks) => {
