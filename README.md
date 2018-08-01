@@ -42,11 +42,13 @@ function MyComponent(sources) {
   /** Add a new item every second */
   const item_sources$ = xs
     .periodic(1000) //
-    .mapTo({
-      // whatever sources Item requires
+    .mapTo({ // whatever sources Item requires=
       dom: sources.dom,
       item: {}
     })
+
+  // item_sources$ could also emit arrays of sources
+  // to simultaneously add multiple components
 
   const lot = Lot(Item, item_sources$, "remove$")
 
