@@ -26,8 +26,9 @@ interface Lot<T> {
 }
 
 export function Collection<So, T>(
-  Component: Component<So, Si<T> & {destroy$?: xs<undefined>}>,
-  add$: xs<So | So[]>
+  Component: Component<So, Si<T>>,
+  add$: xs<So | So[]>,
+  remove_prop: keyof T
 ): Lot<T> {
   const component$_list$ = add$.fold(
     (prev_sinks$_list, sources) => {
@@ -38,8 +39,11 @@ export function Collection<So, T>(
       })
 
       const sinks$_list = sinks_list.map((sinks) => {
-        const component$ = sinks.destroy$
-          ? xs.merge(xs.of(sinks), sinks.destroy$)
+        const component$ = sinks[remove_prop]
+          ? sinks[remove_prop]
+              .take(1)
+              .mapTo(undefined as Si<T> | undefined)
+              .startWith(sinks)
           : xs.of(sinks)
 
         return component$.remember()
