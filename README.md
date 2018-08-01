@@ -31,7 +31,9 @@ import {Lot} from "cycle-lot"
 
 Alternatively you can import `Collection` which is just an alias.
 
-You can also import `pickMerge` and `pickCombine` function, however you probably won't need them.
+You can also import `pickMerge` and `pickCombine` functions, however you probably won't need them.
+
+Here's how you use `cycle-lot`:
 
 ```typescript
 function MyComponent(sources) {
@@ -46,7 +48,7 @@ function MyComponent(sources) {
       item: {}
     })
 
-  const lot = Lot(Item, task_sources$, "remove$")
+  const lot = Lot(Item, item_sources$, "remove$")
 
   lot.combine.dom // xs<VNode[]>
   lot.merge.http // xs<RequestOptions>
@@ -55,4 +57,4 @@ function MyComponent(sources) {
 }
 ```
 
-*In case it got you curious, `cycle-lot` doesn't merge and combine all available sink streams. Instead it uses [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) under the hood to provide getter-like functionality. In fact, nothing gets merged or combined unless you use it in your code. Repeated usage of the same getter will return the same stream object.*
+In case it got you curious, `cycle-lot` doesn't merge and combine all available sink streams. Instead it uses [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) under the hood to provide getter-like functionality. In fact, nothing gets merged or combined unless you use it in your code. Repeated usage of the same getter will return the same stream object.
