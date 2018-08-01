@@ -72,7 +72,7 @@ export function Collection<So, T>(
 
       const sinks$_list = sinks_list.map((sinks) => {
         const component$ = xs
-          .merge(sinks[remove_prop], xs.never())
+          .merge(sinks[remove_prop].take(1), xs.never())
           .mapTo(undefined as Si<T> | undefined)
           .startWith(sinks)
 
