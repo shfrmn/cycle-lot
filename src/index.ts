@@ -69,11 +69,8 @@ export function Collection<So, T>(
 
       const sinks$_list = sinks_list.map((sinks) => {
         const component$ = sinks[remove_prop]
-          ? sinks[remove_prop]
-              .take(1)
-              .mapTo(undefined as Si<T> | undefined)
-              .startWith(sinks)
-          : xs.of(sinks)
+          .mapTo(undefined as Si<T> | undefined)
+          .startWith(sinks)
 
         return component$.remember()
       })
