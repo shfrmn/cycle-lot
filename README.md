@@ -1,6 +1,6 @@
 # cycle-lot
 
-Handle dynamic lists of Cycle.js components with ease.
+Handle dynamic lists of [Cycle.js](https://github.com/cyclejs/cyclejs) components with ease.
 
 Differences from [@cycle/collection](https://github.com/cyclejs/collection):
 
