@@ -19,7 +19,7 @@ export function pickCombine<T, P extends keyof T>(
 
 interface CollectionOptions<So, T, M extends keyof T, C extends keyof T> {
   component: Component<So, Si<T> & {destroy$?: xs<undefined>}>
-  create$: xs<So>
+  create$: xs<So | So[]>
   merge: M[]
   combine: C[]
 }
@@ -33,14 +33,22 @@ export function Collection<So, T, M extends keyof T, C extends keyof T>(
   options: CollectionOptions<So, T, M, C>
 ): Merge<T, M> & Combine<T, C> {
   const component$_list$ = options.create$.fold(
-    (component$_list, sources) => {
-      const component = options.component(sources)
+    (prev_sinks$_list, sources) => {
+      const sources_list = Array.isArray(sources) ? sources : [sources]
 
-      const component$ = component.destroy$
-        ? xs.merge(xs.of(component), component.destroy$)
-        : xs.of(component)
+      const sinks_list = sources_list.map((sources) => {
+        return options.component(sources)
+      })
 
-      return component$_list.concat(component$.remember())
+      const sinks$_list = sinks_list.map((sinks) => {
+        const component$ = sinks.destroy$
+          ? xs.merge(xs.of(sinks), sinks.destroy$)
+          : xs.of(sinks)
+
+        return component$.remember()
+      })
+
+      return prev_sinks$_list.concat(sinks$_list)
     },
     [] as xs<Si<T> | undefined>[]
   )
