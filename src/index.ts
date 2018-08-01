@@ -20,6 +20,35 @@ export function pickCombine<T, P extends keyof T>(
 type MergeAll<T> = {[P in keyof T]: xs<T[P]>}
 type CombineAll<T> = {[P in keyof T]: xs<T[P][]>}
 
+function createLot<T>(
+  pickF: typeof pickMerge,
+  sink_list$: xs<Si<T>[]>
+): MergeAll<T>
+function createLot<T>(
+  pickF: typeof pickCombine,
+  sink_list$: xs<Si<T>[]>
+): CombineAll<T>
+function createLot<T>(pickF: any, sink_list$: xs<Si<T>[]>) {
+  return new Proxy(
+    {},
+    {
+      get: (lot, prop) => {
+        if (lot[prop]) {
+          return lot[prop]
+        }
+
+        const sink$ = sink_list$
+          .map((sink_list) => pickF(sink_list, prop as keyof T))
+          .flatten()
+
+        lot[prop] = sink$
+
+        return sink$
+      }
+    }
+  )
+}
+
 interface Lot<T> {
   merge: MergeAll<T>
   combine: CombineAll<T>
@@ -66,43 +95,8 @@ export function Collection<So, T>(
     })
     .flatten()
 
-  const merge = new Proxy(
-    {},
-    {
-      get: (lot, prop) => {
-        if (lot[prop]) {
-          return lot[prop]
-        }
-
-        const sink$ = sink_list$
-          .map((sink_list) => pickMerge(sink_list, prop as keyof T))
-          .flatten()
-
-        lot[prop] = sink$
-
-        return sink$
-      }
-    }
-  ) as MergeAll<T>
-
-  const combine = new Proxy(
-    {},
-    {
-      get: (lot, prop) => {
-        if (lot[prop]) {
-          return lot[prop]
-        }
-
-        const sink$ = sink_list$
-          .map((sink_list) => pickCombine(sink_list, prop as keyof T))
-          .flatten()
-
-        lot[prop] = sink$
-
-        return sink$
-      }
-    }
-  ) as CombineAll<T>
+  const merge = createLot(pickMerge, sink_list$)
+  const combine = createLot(pickCombine, sink_list$)
 
   return {merge, combine}
 }
