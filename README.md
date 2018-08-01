@@ -48,7 +48,7 @@ function MyComponent(sources) {
     })
 
   // item_sources$ could also emit arrays of sources
-  // to simultaneously add multiple components
+  // to simultaneously add multiple items
 
   const lot = Lot(Item, item_sources$, "remove$")
 
