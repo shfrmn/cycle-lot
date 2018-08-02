@@ -8,8 +8,8 @@
     "build": "tsc",
     "uglify": "uglifyjs build/index.js -o build/index.min.js --compress --mangle",
     "bundle": "rollup build/index.min.js --format umd --name \"lot\" --file dist/index.js",
-    "dist": "npm run build && npm run uglify && npm run bundle",
-    "prepublishOnly": "npm run dist && rm -rf build",
+    "dist": "npm run build && npm run uglify && npm run bundle && rimraf build",
+    "prepublishOnly": "npm run dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/shfrmn/cycle-lot#readme",
   "devDependencies": {
     "prettier": "^1.14.0",
+    "rimraf": "^2.6.2",
     "rollup": "^0.63.4",
     "typescript": "^3.0.1",
     "uglify-es": "^3.3.9"
