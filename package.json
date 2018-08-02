@@ -1,6 +1,6 @@
 {
   "name": "cycle-lot",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,13 @@
     "type": "git",
     "url": "git+https://github.com/shfrmn/cycle-lot.git"
   },
-  "keywords": ["cycle", "cyclejs", "collection", "list", "component"],
+  "keywords": [
+    "cycle",
+    "cyclejs",
+    "collection",
+    "list",
+    "component"
+  ],
   "author": "Joseph Shaferman <joseph.shaferman@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -34,5 +40,9 @@
     "@cycle/isolate": "^3.4.0",
     "xstream": "^11.7.0"
   },
-  "files": ["src/**/*", "dist/**/*", "tsconfig.json"]
+  "files": [
+    "src/**/*",
+    "dist/**/*",
+    "tsconfig.json"
+  ]
 }
