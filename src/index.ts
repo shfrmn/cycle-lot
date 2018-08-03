@@ -96,33 +96,35 @@ export function Lot<So, T>(
     remove_prop = remove[1] as keyof T
   }
 
-  const growing_component$_list$ = add$
-    .map((sources) => (Array.isArray(sources) ? sources : [sources]))
-    .fold(
-      (prev_sinks$_list, sources) => {
-        const sinks_list = sources.map((sources) => {
-          return (isolate(Component) as Component<So, Si<T>>)(sources)
-        })
-
-        const sinks$_list: xs<Si<T> | undefined>[] = sinks_list.map((sinks) => {
-          if (remove_prop) {
-            return xs
-              .merge(sinks[remove_prop].take(1), xs.never())
-              .mapTo(undefined as Si<T> | undefined)
-              .startWith(sinks)
-          } else {
-            return xs.of(sinks)
-          }
-        })
-
-        return prev_sinks$_list.concat(sinks$_list)
-      },
-      [] as xs<Si<T> | undefined>[]
-    )
-
   const component$_list$ = reset$
     .startWith(undefined)
-    .mapTo(growing_component$_list$)
+    .map(() => {
+      return add$
+        .map((sources) => (Array.isArray(sources) ? sources : [sources]))
+        .fold(
+          (prev_sinks$_list, sources) => {
+            const sinks_list = sources.map((sources) => {
+              return (isolate(Component) as Component<So, Si<T>>)(sources)
+            })
+
+            const sinks$_list: xs<Si<T> | undefined>[] = sinks_list.map(
+              (sinks) => {
+                if (remove_prop) {
+                  return xs
+                    .merge(sinks[remove_prop].take(1), xs.never())
+                    .mapTo(undefined as Si<T> | undefined)
+                    .startWith(sinks)
+                } else {
+                  return xs.of(sinks)
+                }
+              }
+            )
+
+            return prev_sinks$_list.concat(sinks$_list)
+          },
+          [] as xs<Si<T> | undefined>[]
+        )
+    })
     .flatten()
 
   const sink_list$ = component$_list$
