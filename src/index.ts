@@ -60,7 +60,7 @@ export const Lot = Collection
 export function Collection<So, T>(
   Component: Component<So, Si<T>>,
   add$: xs<So | So[]>,
-  remove_prop: keyof T
+  remove_prop?: keyof T
 ): Lot<T> {
   const component$_list$ = add$.fold(
     (prev_sinks$_list, sources) => {
@@ -71,12 +71,14 @@ export function Collection<So, T>(
       })
 
       const sinks$_list = sinks_list.map((sinks) => {
-        const component$ = xs
-          .merge(sinks[remove_prop].take(1), xs.never())
-          .mapTo(undefined as Si<T> | undefined)
-          .startWith(sinks)
+        const component$: xs<Si<T> | undefined> = remove_prop
+          ? xs
+              .merge(sinks[remove_prop].take(1), xs.never())
+              .mapTo(undefined as Si<T> | undefined)
+              .startWith(sinks)
+          : xs.of(sinks).remember()
 
-        return component$.remember()
+        return component$
       })
 
       return prev_sinks$_list.concat(sinks$_list)
