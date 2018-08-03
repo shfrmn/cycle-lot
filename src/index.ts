@@ -59,6 +59,10 @@ export const Collection = Lot
 
 export function Lot<So, T>(
   Component: Component<So, Si<T>>,
+  add$: xs<So | So[]>
+): Lot<T>
+export function Lot<So, T>(
+  Component: Component<So, Si<T>>,
   add$: xs<So | So[]>,
   reset$: xs<any>
 ): Lot<T>
