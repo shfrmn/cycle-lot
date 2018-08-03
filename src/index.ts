@@ -55,36 +55,71 @@ interface Lot<T> {
   combine: CombineAll<T>
 }
 
-export const Lot = Collection
+export const Collection = Lot
 
-export function Collection<So, T>(
+export function Lot<So, T>(
   Component: Component<So, Si<T>>,
   add$: xs<So | So[]>,
-  remove_prop?: keyof T
+  reset$: xs<any>
+): Lot<T>
+export function Lot<So, T>(
+  Component: Component<So, Si<T>>,
+  add$: xs<So | So[]>,
+  remove_prop: keyof T
+): Lot<T>
+export function Lot<So, T>(
+  Component: Component<So, Si<T>>,
+  add$: xs<So | So[]>,
+  reset$: xs<any>,
+  remove_prop: keyof T
+): Lot<T>
+export function Lot<So, T>(
+  Component: Component<So, Si<T>>,
+  add$: xs<So | So[]>,
+  ...remove: (xs<any> | keyof T)[]
 ): Lot<T> {
-  const component$_list$ = add$.fold(
-    (prev_sinks$_list, sources) => {
-      const sources_list = Array.isArray(sources) ? sources : [sources]
+  let reset$: xs<any>
+  let remove_prop: (keyof T) | undefined = undefined
 
-      const sinks_list = sources_list.map((sources) => {
-        return (isolate(Component) as Component<So, Si<T>>)(sources)
-      })
+  if (typeof remove[0] === "object") {
+    reset$ = remove[0] as xs<any>
+  } else {
+    reset$ = xs.empty()
+    remove_prop = remove[0] as keyof T
+  }
 
-      const sinks$_list: xs<Si<T> | undefined>[] = sinks_list.map((sinks) => {
-        if (remove_prop) {
-          return xs
-            .merge(sinks[remove_prop].take(1), xs.never())
-            .mapTo(undefined as Si<T> | undefined)
-            .startWith(sinks)
-        } else {
-          return xs.of(sinks)
-        }
-      })
+  if (remove[1]) {
+    remove_prop = remove[1] as keyof T
+  }
 
-      return prev_sinks$_list.concat(sinks$_list)
-    },
-    [] as xs<Si<T> | undefined>[]
-  )
+  const growing_component$_list$ = add$
+    .map((sources) => (Array.isArray(sources) ? sources : [sources]))
+    .fold(
+      (prev_sinks$_list, sources) => {
+        const sinks_list = sources.map((sources) => {
+          return (isolate(Component) as Component<So, Si<T>>)(sources)
+        })
+
+        const sinks$_list: xs<Si<T> | undefined>[] = sinks_list.map((sinks) => {
+          if (remove_prop) {
+            return xs
+              .merge(sinks[remove_prop].take(1), xs.never())
+              .mapTo(undefined as Si<T> | undefined)
+              .startWith(sinks)
+          } else {
+            return xs.of(sinks)
+          }
+        })
+
+        return prev_sinks$_list.concat(sinks$_list)
+      },
+      [] as xs<Si<T> | undefined>[]
+    )
+
+  const component$_list$ = reset$
+    .startWith(undefined)
+    .mapTo(growing_component$_list$)
+    .flatten()
 
   const sink_list$ = component$_list$
     .map((component$_list) => {
