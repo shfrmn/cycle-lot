@@ -70,15 +70,15 @@ export function Collection<So, T>(
         return (isolate(Component) as Component<So, Si<T>>)(sources)
       })
 
-      const sinks$_list = sinks_list.map((sinks) => {
-        const component$: xs<Si<T> | undefined> = remove_prop
-          ? xs
-              .merge(sinks[remove_prop].take(1), xs.never())
-              .mapTo(undefined as Si<T> | undefined)
-              .startWith(sinks)
-          : xs.of(sinks).remember()
-
-        return component$
+      const sinks$_list: xs<Si<T> | undefined>[] = sinks_list.map((sinks) => {
+        if (remove_prop) {
+          return xs
+            .merge(sinks[remove_prop].take(1), xs.never())
+            .mapTo(undefined as Si<T> | undefined)
+            .startWith(sinks)
+        } else {
+          return xs.of(sinks)
+        }
       })
 
       return prev_sinks$_list.concat(sinks$_list)
