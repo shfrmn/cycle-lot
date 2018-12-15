@@ -44,5 +44,11 @@
     "src/**/*",
     "dist/**/*",
     "tsconfig.json"
-  ]
+  ],
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "bracketSpacing": false,
+    "arrowParens": "always"
+  }
 }
