@@ -1,7 +1,7 @@
 import xs from "xstream"
 import isolate from "@cycle/isolate"
 
-type Component<So, Si> = (sources: So, ...rest: any[]) => Si
+type Component<So, Pr, Si> = (sources: So, props: Pr) => Si
 type Si<T> = {[P in keyof T]: xs<T[P]>}
 
 export function pickMerge<T, P extends keyof T>(
@@ -57,61 +57,36 @@ interface Lot<T> {
 
 export const Collection = Lot
 
-export function Lot<So, T>(
-  Component: Component<So, Si<T>>,
-  add$: xs<So | So[]>
-): Lot<T>
-export function Lot<So, T>(
-  Component: Component<So, Si<T>>,
-  add$: xs<So | So[]>,
-  reset$: xs<any>
-): Lot<T>
-export function Lot<So, T>(
-  Component: Component<So, Si<T>>,
-  add$: xs<So | So[]>,
-  remove_prop: keyof T
-): Lot<T>
-export function Lot<So, T>(
-  Component: Component<So, Si<T>>,
-  add$: xs<So | So[]>,
-  reset$: xs<any>,
-  remove_prop: keyof T
-): Lot<T>
-export function Lot<So, T>(
-  Component: Component<So, Si<T>>,
-  add$: xs<So | So[]>,
-  ...remove: (xs<any> | keyof T)[]
-): Lot<T> {
-  let reset$: xs<any>
-  let remove_prop: (keyof T) | undefined = undefined
+interface LotOptions<So, Pr, T> {
+  component: Component<So, Pr, Si<T>>
+  sources: So
+  add$: xs<Pr | Pr[]>
+  reset$?: xs<any>
+  remove_prop?: keyof T
+}
 
-  if (typeof remove[0] === "object") {
-    reset$ = remove[0] as xs<any>
-  } else {
-    reset$ = xs.empty()
-    remove_prop = remove[0] as keyof T
-  }
-
-  if (remove[1]) {
-    remove_prop = remove[1] as keyof T
-  }
+export function Lot<So, Pr, T>(options: LotOptions<So, Pr, T>): Lot<T> {
+  let reset$ = options.reset$ || xs.empty()
 
   const component$_list$ = reset$
     .startWith(undefined)
     .map(() => {
-      return add$
-        .map((sources) => (Array.isArray(sources) ? sources : [sources]))
+      return options.add$
+        .map((props) => (Array.isArray(props) ? props : [props]))
         .fold(
-          (prev_sinks$_list, sources) => {
-            const sinks_list = sources.map((sources) => {
-              return (isolate(Component) as Component<So, Si<T>>)(sources)
+          (prev_sinks$_list, props_batch) => {
+            const sinks_list = props_batch.map((props) => {
+              return (isolate(options.component) as Component<So, Pr, Si<T>>)(
+                options.sources,
+                props
+              )
             })
 
             const sinks$_list: xs<Si<T> | undefined>[] = sinks_list.map(
               (sinks) => {
-                if (remove_prop) {
+                if (options.remove_prop) {
                   return xs
-                    .merge(sinks[remove_prop].take(1), xs.never())
+                    .merge(sinks[options.remove_prop].take(1), xs.never())
                     .mapTo(undefined as Si<T> | undefined)
                     .startWith(sinks)
                 } else {
